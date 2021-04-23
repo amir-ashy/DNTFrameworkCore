@@ -1,0 +1,11 @@
+{
+  "author": "Salar Rabbal <https://www.linkedin.com/in/rabbal/>",
+  "classifications": [".NET Core", "ASP.NET Core", "Web API", "EFCore"],
+  "name": "ASP.NET CORE WebAPI template",
+  "identity": "DNTFrameworkCore.WebAPI",
+  "shortName": "dntcore-api",
+  "tags": {
+    "language": "C#"
+  },
+  "sourceName": "ProjectName"
+}

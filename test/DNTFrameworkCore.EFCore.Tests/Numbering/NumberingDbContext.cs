@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using DNTFrameworkCore.EFCore.Context;
+using DNTFrameworkCore.EFCore.Context.Hooks;
 using DNTFrameworkCore.EFCore.SqlServer.Numbering;
-using DNTFrameworkCore.Runtime;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,9 +9,8 @@ namespace DNTFrameworkCore.EFCore.Tests.Numbering
 {
     public class NumberingDbContext : DbContextCore
     {
-        public NumberingDbContext(IHookEngine hookEngine,
-            IUserSession session,
-            DbContextOptions<NumberingDbContext> options) : base(hookEngine, session, options)
+        public NumberingDbContext(DbContextOptions<NumberingDbContext> options, IEnumerable<IHook> hooks) : base(
+            options, hooks)
         {
         }
 
@@ -18,18 +18,19 @@ namespace DNTFrameworkCore.EFCore.Tests.Numbering
         {
             modelBuilder.ApplyConfiguration(new TestTaskConfiguration());
             modelBuilder.ApplyNumberedEntityConfiguration();
-
+            modelBuilder.AddTenancyField<long>();
+            modelBuilder.AddTrackingFields<long>();
             base.OnModelCreating(modelBuilder);
         }
     }
 
-    public class TestTaskConfiguration : IEntityTypeConfiguration<TestTask>
+    public class TestTaskConfiguration : IEntityTypeConfiguration<NumberingTestEntity>
     {
-        public void Configure(EntityTypeBuilder<TestTask> builder)
+        public void Configure(EntityTypeBuilder<NumberingTestEntity> builder)
         {
             builder.Property(t => t.Number).HasMaxLength(50).IsRequired();
 
-            builder.ToTable(nameof(TestTask));
+            builder.ToTable(nameof(NumberingTestEntity));
         }
     }
 }

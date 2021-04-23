@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DNTFrameworkCore.TestAPI.Controllers
 {
     [Route("api/[controller]")]
-    public class UsersController : CrudController<IUserService, long, UserReadModel, UserModel>
+    public class UsersController : EntityController<IUserService, long, UserReadModel, UserModel>
     {
         private readonly ILookupService _lookupService;
 
@@ -29,7 +29,7 @@ namespace DNTFrameworkCore.TestAPI.Controllers
         [PermissionAuthorize(PermissionNames.Users_Create, PermissionNames.Users_Edit)]
         public async Task<IActionResult> RoleList()
         {
-            var result = await _lookupService.ReadRolesAsync();
+            var result = await _lookupService.FetchRolesAsync();
             return Ok(result);
         }
     }

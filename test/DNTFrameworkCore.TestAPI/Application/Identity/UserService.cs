@@ -17,20 +17,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DNTFrameworkCore.TestAPI.Application.Identity
 {
-    public interface IUserService : ICrudService<long, UserReadModel, UserModel>
+    public interface IUserService : IEntityService<long, UserReadModel, UserModel>
     {
     }
 
-    public class UserService : CrudService<User, long, UserReadModel, UserModel>, IUserService
+    public class UserService : EntityService<User, long, UserReadModel, UserModel>, IUserService
     {
         private readonly IMapper _mapper;
         private readonly IUserPasswordHashAlgorithm _password;
 
         public UserService(
-            IUnitOfWork uow,
+            IDbContext dbContext,
             IEventBus bus,
             IUserPasswordHashAlgorithm password,
-            IMapper mapper) : base(uow, bus)
+            IMapper mapper) : base(dbContext, bus)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _password = password ?? throw new ArgumentNullException(nameof(password));
@@ -39,7 +39,7 @@ namespace DNTFrameworkCore.TestAPI.Application.Identity
         protected override IQueryable<User> FindEntityQueryable => base.FindEntityQueryable.Include(u => u.Roles)
             .Include(u => u.Permissions);
 
-        public override Task<IPagedResult<UserReadModel>> ReadPagedListAsync(FilteredPagedRequest model,
+        public override Task<IPagedResult<UserReadModel>> FetchPagedListAsync(FilteredPagedRequest request,
             CancellationToken cancellationToken = default)
         {
             return EntitySet.AsNoTracking()
@@ -50,14 +50,14 @@ namespace DNTFrameworkCore.TestAPI.Application.Identity
                     UserName = u.UserName,
                     DisplayName = u.DisplayName,
                     LastLoggedInDateTime = u.LastLoggedInDateTime
-                }).ToPagedListAsync(model, cancellationToken);
+                }).ToPagedListAsync(request, cancellationToken);
         }
 
         protected override void MapToEntity(UserModel model, User user)
         {
             _mapper.Map(model, user);
 
-            MapSecurityStamp(user, model);
+            ResetSecurityToken(user, model);
             MapPasswordHash(user, model);
         }
 
@@ -66,9 +66,9 @@ namespace DNTFrameworkCore.TestAPI.Application.Identity
             return _mapper.Map<UserModel>(user);
         }
 
-        private static void MapSecurityStamp(User user, UserModel model)
+        private static void ResetSecurityToken(User user, UserModel model)
         {
-            if (!model.ShouldMapSecurityStamp()) return;
+            if (!model.ShouldResetSecurityToken()) return;
 
             user.SecurityToken = Guid.NewGuid().ToString("N");
         }

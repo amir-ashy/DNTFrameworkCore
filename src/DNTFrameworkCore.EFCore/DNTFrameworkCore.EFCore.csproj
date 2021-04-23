@@ -1,19 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\common.props" />
     <PropertyGroup>
         <Title>DNTFrameworkCore.EFCore</Title>
-        <Description>This Library Contains Implementations of ICrudService,Logging and Transaction Interception based on EFCore </Description>
-        <VersionPrefix>4.6.0</VersionPrefix>
-        <Authors>GholamReza Rabbal</Authors>
-        <TargetFrameworks>netstandard2.0</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
-        <PackageProjectUrl>https://github.com/rabbal/DNTFrameworkCore</PackageProjectUrl>
-        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-        <PackageTags>.NETCore;EFCore;CRUD;Transaction;Logging</PackageTags>
+        <Description>This Library Contains Implementations of IEntityService,Logging and Transaction Interception based on EFCore</Description>
+        <PackageTags>.NET;EFCore;CRUD;Transaction;Logging</PackageTags>
         <AssemblyName>DNTFrameworkCore.EFCore</AssemblyName>
         <RootNamespace>DNTFrameworkCore.EFCore</RootNamespace>
-        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\DNTFrameworkCore\DNTFrameworkCore.csproj" />
@@ -23,19 +15,9 @@
         <Folder Include="Context\Converters\Encryption" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
         <PackageReference Include="Polly" Version="7.2.1" />
-        <PackageReference Include="System.Text.Json" Version="4.7.2" />
-    </ItemGroup>
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PlatformTarget>anycpu</PlatformTarget>
-    </PropertyGroup>
-    <ItemGroup>
-        <Content Include="README.md">
-            <Pack>true</Pack>
-            <PackagePath>README.md</PackagePath>
-        </Content>
     </ItemGroup>
 </Project>

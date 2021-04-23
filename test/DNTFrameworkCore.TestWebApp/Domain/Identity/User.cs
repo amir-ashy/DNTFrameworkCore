@@ -4,13 +4,13 @@ using DNTFrameworkCore.Domain;
 
 namespace DNTFrameworkCore.TestWebApp.Domain.Identity
 {
-    public class User : Entity<long>, IHasRowVersion, ICreationTracking, IModificationTracking
+    public class User : Entity<long>, IHasRowVersion, IHasRowIntegrity, ICreationTracking, IModificationTracking
     {
         public const int MaxUserNameLength = 256;
         public const int MaxDisplayNameLength = 50;
         public const int MaxPasswordHashLength = 256;
         public const int MaxPasswordLength = 128;
-        public const int MaxSecurityStampLength = 128;
+        public const int MaxSecurityTokenLength = 128;
 
         public string UserName { get; set; }
         public string NormalizedUserName { get; set; }
@@ -18,7 +18,7 @@ namespace DNTFrameworkCore.TestWebApp.Domain.Identity
         public string NormalizedDisplayName { get; set; }
         public string PasswordHash { get; set; }
         public bool IsActive { get; set; }
-        public DateTimeOffset? LastLoggedInDateTime { get; set; }
+        public DateTime? LastLoggedInDateTime { get; set; }
         public byte[] Version { get; set; }
 
         /// <summary>
@@ -32,11 +32,24 @@ namespace DNTFrameworkCore.TestWebApp.Domain.Identity
 
         public override string ToString() => UserName;
 
-        public static string NewSecurityStamp()
+        public void ResetSecurityToken()
+        {
+            SecurityToken = NewSecurityToken();
+        }
+
+        public static string NewSecurityToken()
         {
             return Guid.NewGuid().ToString("N");
         }
 
-        
+        public static string NormalizeUserName(string userName)
+        {
+            return userName.ToUpperInvariant();
+        }
+
+        public static string NormalizeDisplayName(string userName)
+        {
+            return userName.ToUpperInvariant();
+        }
     }
 }

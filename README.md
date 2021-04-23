@@ -1,35 +1,39 @@
-# DNTFrameworkCore 
+<img src="docs/logo.png" height="64"/>
 
 
+[![.NET](https://github.com/rabbal/DNTFrameworkCore/actions/workflows/dotnet.yml/badge.svg)](https://github.com/rabbal/DNTFrameworkCore/actions/workflows/dotnet.yml)
+![Nuget](https://img.shields.io/nuget/v/DNTFrameworkCore)
+[![build aspnet-core-api template](https://github.com/rabbal/DNTFrameworkCore/actions/workflows/aspnet-core-api-template.yml/badge.svg)](https://github.com/rabbal/DNTFrameworkCore/actions/workflows/aspnet-core-api-template.yml)
+![Nuget](https://img.shields.io/nuget/v/DNTFrameworkCoreTemplateAPI?label=aspnet-core-api-template)
 ### What is DNTFrameworkCore?
 
 `DNTFrameworkCore` is a Lightweight and 
-Extensible Infrastructure for Building High Quality Web Applications Based on ASP.NET Core and has the following goals:
-* Common structures in various applications like Cross-Cutting Concerns and etc
+Extensible Infrastructure for Building High-Quality Web Applications Based on ASP.NET Core and has the following goals:
+* Common structures in various applications like Cross-Cutting Concerns, etc
 * Follow DRY principle to focus on main business logic
 * Reduce the development time
 * Less bug and stop bug propagation 
 * Reduce the training time of the new developer with low knowledge about OOP and OOD
  
 Application Service
-```csharp
-public interface IBlogService : ICrudService<int, BlogModel>
+```c#
+public interface IBlogService : IEntityService<int, BlogModel>
 {
 }
 
-public class BlogService : CrudService<Blog, int, BlogModel>, IBlogService
+public class BlogService : EntityService<Blog, int, BlogModel>, IBlogService
 {
     private readonly IMapper _mapper;
 
     public BlogService(
-        IUnitOfWork uow,
+        IDbContext dbContext,
         IEventBus bus,
-        IMapper mapper) : base(uow, bus)
+        IMapper mapper) : base(dbContext, bus)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public override Task<IPagedResult<BlogModel>> ReadPagedListAsync(FilteredPagedRequest request,
+    public override Task<IPagedResult<BlogModel>> FetchPagedListAsync(FilteredPagedRequest request,
         CancellationToken cancellationToken = default)
     {
         return EntitySet.AsNoTracking()
@@ -55,9 +59,9 @@ public class BlogService : CrudService<Blog, int, BlogModel>, IBlogService
  ``` 
  
 ASP.NET Core WebAPI
-```csharp
+```c#
 [Route("api/[controller]")]
-public class BlogsController : CrudController<IBlogService, int, BlogModel>
+public class BlogsController : EntityController<IBlogService, int, BlogModel>
 {
     public BlogsController(IBlogService service) : base(service)
     {
@@ -71,8 +75,8 @@ public class BlogsController : CrudController<IBlogService, int, BlogModel>
  ```
  
  ASP.NET Core MVC
- ```csharp
-public class BlogsController : CrudController<IBlogService, int, BlogModel>
+ ```c#
+public class BlogsController : EntityController<IBlogService, int, BlogModel>
 {
     public BlogsController(IBlogService service) : base(service)
     {
@@ -140,11 +144,11 @@ OR
 
 ```dotnet new dntcore-api```
 
-Now you have a solution like below that contains complete identity management feature include user,role and dynamic permission management and also integrated with persistent JWT authentication machanism:
+Now you have a solution like below that contains complete identity management feature includes user, role, and dynamic permission management and also integrated with persistent JWT authentication mechanism:
 
 ![Solution Structure](https://github.com/rabbal/DNTFrameworkCore/blob/master/docs/dnt-solution.jpg)
 
-For more info about templates you can watch [DNTFrameworkCoreTemplate repository](https://github.com/rabbal/DNTFrameworkCoreTemplate)
+For more info about templates, you can watch [DNTFrameworkCoreTemplate repository](https://github.com/rabbal/DNTFrameworkCoreTemplate)
 
 ## Features
 
@@ -155,8 +159,8 @@ For more info about templates you can watch [DNTFrameworkCoreTemplate repository
 * Numbering
 * Functional Programming Error Handling
 * Permission Authorization
-* CrudService
-* CrudController (API and MVC)
+* EntityService
+* EntityController (API and MVC)
 * DbLogger Provider based on EFCore
 * ProtectionKey EFCore Store
 * Hooks
@@ -237,7 +241,7 @@ public class TaskModel : MasterModel<int>, IValidatableObject
 }
 ```
 
-Note: Based on validation infrastructure, you can validate Model/DTO with various approach, using by DataAnnotation ValidateAttribute, Implementing IValidatableObject or Implement IModelValidator<T> that exist in DNTFrameworkCore package.
+Note: Based on validation infrastructure, you can validate Model/DTO with various approaches, using by DataAnnotation ValidateAttribute, Implementing IValidatableObject, or Implement IModelValidator<T> that exist in DNTFrameworkCore package.
 
 ```c#
 public class TaskValidator : ModelValidator<TaskModel>
@@ -252,7 +256,7 @@ public class TaskValidator : ModelValidator<TaskModel>
 }
 ```
 
-Also in most cases, one Model/DTO can be enough for your requirements about Create/Edit/View an entity. However you can create ReadModel like below:
+Also in most cases, one Model/DTO can be enough for your requirements about Create/Edit/View an entity. However, you can create ReadModel like below:
 ```c#
 public class TaskReadModel : ReadModel<int>
 {
@@ -265,20 +269,20 @@ public class TaskReadModel : ReadModel<int>
 **Implement Service**
  
 ```c#
-public interface ITaskService : ICrudService<int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>
+public interface ITaskService : IEntityService<int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>
 {
 }
 
-public class TaskService : CrudService<Task, int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>,
+public class TaskService : EntityService<Task, int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>,
     ITaskService
 {
     private readonly IMapper _mapper;
-    public TaskService(IUnitOfWork uow, IEventBus bus, IMapper mapper) :base(uow, bus)
+    public TaskService(IDbContext dbContext, IEventBus bus, IMapper mapper) :base(dbContext, bus)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper);
     }
 
-    public override Task<IPagedResult<TaskReadModel>> ReadPagedListAsync(TaskFilteredPagedRequest request,
+    public override Task<IPagedResult<TaskReadModel>> FetchPagedListAsync(TaskFilteredPagedRequest request,
         CancellationToken cancellationToken = default)
     {
         return EntitySet.AsNoTracking()
@@ -310,7 +314,7 @@ In DNTFrameworkCore.EFCore [there is no dependency to AutoMapper](https://cezary
 ```c#
 [Route("api/[controller]")]
 public class
-    TasksController : CrudController<ITaskService, int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>
+    TasksController : EntityController<ITaskService, int, TaskReadModel, TaskModel, TaskFilteredPagedRequest>
 {
     public TasksController(ITaskService service) : base(service)
     {
@@ -326,7 +330,7 @@ public class
 ```c#
 
 [Route("api/[controller]")]
-public class BlogsController : CrudController<IBlogService, int, BlogModel>
+public class BlogsController : EntityController<IBlogService, int, BlogModel>
 {
     public BlogsController(IBlogService service) : base(service)
     {
@@ -341,5 +345,7 @@ public class BlogsController : CrudController<IBlogService, int, BlogModel>
 ```
 
 ## ASP.NET Boilerplate
+[DNTFrameworkCore vs ABP Framework](https://medium.com/@rabbal/dntframeworkcore-vs-abp-framework-b48f5b7f8a24)
+
 A small part of this project like the following sections are taken from [ABP](https://github.com/aspnetboilerplate/aspnetboilerplate)
 - Validation with refactoring to support functional programming error handling mechanism

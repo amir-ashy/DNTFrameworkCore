@@ -30,8 +30,8 @@ namespace DNTFrameworkCore.TestAPI.Authentication
     public sealed class AuthenticationService : IAuthenticationService
     {
         private readonly ITokenService _token;
-        private readonly IUnitOfWork _uow;
-        private readonly IAntiXsrf _antiforgery;
+        private readonly IDbContext _dbContext;
+        private readonly IAntiXsrf _antiXsrf;
         private readonly IOptionsSnapshot<TokenOptions> _options;
         private readonly IMessageLocalizer _localizer;
         private readonly IUserPasswordHashAlgorithm _password;
@@ -41,23 +41,23 @@ namespace DNTFrameworkCore.TestAPI.Authentication
 
         public AuthenticationService(
             ITokenService token,
-            IUnitOfWork uow,
-            IAntiXsrf antiforgery,
+            IDbContext dbContext,
+            IAntiXsrf antiXsrf,
             IOptionsSnapshot<TokenOptions> options,
             IMessageLocalizer localizer,
             IUserPasswordHashAlgorithm password,
             IUserSession session)
         {
             _token = token ?? throw new ArgumentNullException(nameof(token));
-            _uow = uow ?? throw new ArgumentNullException(nameof(uow));
-            _antiforgery = antiforgery ?? throw new ArgumentNullException(nameof(antiforgery));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _antiXsrf = antiXsrf ?? throw new ArgumentNullException(nameof(antiXsrf));
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _localizer = localizer ?? throw new ArgumentNullException(nameof(localizer));
             _password = password ?? throw new ArgumentNullException(nameof(password));
             _session = session ?? throw new ArgumentNullException(nameof(session));
 
-            _users = _uow.Set<User>();
-            _roles = _uow.Set<Role>();
+            _users = _dbContext.Set<User>();
+            _roles = _dbContext.Set<Role>();
         }
 
         public async Task<SignInResult> SignInAsync(string userName, string password)
@@ -84,7 +84,7 @@ namespace DNTFrameworkCore.TestAPI.Authentication
 
             var claims = await BuildClaimsAsync(userId);
             var token = await _token.NewTokenAsync(userId, claims);
-            _antiforgery.AddToken(claims,JwtBearerDefaults.AuthenticationScheme);
+            _antiXsrf.AddToken(claims,JwtBearerDefaults.AuthenticationScheme);
 
             return SignInResult.Ok(token);
         }
@@ -97,7 +97,7 @@ namespace DNTFrameworkCore.TestAPI.Authentication
         {
             await _token.RevokeTokensAsync(_session.UserId.FromString<long>());
 
-            _antiforgery.RemoveToken();
+            _antiXsrf.RemoveToken();
         }
 
         private async Task<IList<Claim>> BuildClaimsAsync(long userId)
@@ -121,7 +121,7 @@ namespace DNTFrameworkCore.TestAPI.Authentication
                     _options.Value.Issuer),
                 new Claim(UserClaimTypes.DisplayName, user.DisplayName, ClaimValueTypes.String,
                     _options.Value.Issuer),
-                new Claim(UserClaimTypes.SecurityStamp, user.SecurityToken, ClaimValueTypes.String,
+                new Claim(UserClaimTypes.SecurityToken, user.SecurityToken, ClaimValueTypes.String,
                     _options.Value.Issuer)
             };
 

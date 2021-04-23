@@ -35,7 +35,7 @@ namespace DNTFrameworkCore.EFCore.Context
             _bus = bus;
         }
 
-        protected override void Hook(IAggregateRoot entity, HookEntityMetadata metadata, IUnitOfWork context)
+        protected override void Hook(IAggregateRoot entity, HookEntityMetadata metadata, IDbContext context)
         {
             //todo: async issue
         }
@@ -45,17 +45,18 @@ namespace DNTFrameworkCore.EFCore.Context
         where TUserId : IEquatable<TUserId>
     {
         private readonly IUserSession _session;
-        private readonly IClock _clock;
+        private readonly ISystemClock _clock;
 
-        public PreInsertCreationTrackingHook(IUserSession session, IClock clock)
+        public PreInsertCreationTrackingHook(IUserSession session, ISystemClock clock)
         {
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
         public override string Name => HookNames.CreationTracking;
+        public override int Order => int.MinValue;
 
-        protected override void Hook(ICreationTracking entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(ICreationTracking entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.Property(EFCoreShadow.CreatedDateTime).CurrentValue = _clock.Now;
             metadata.Entry.Property(EFCoreShadow.CreatedByBrowserName).CurrentValue = _session.UserBrowserName;
@@ -68,17 +69,17 @@ namespace DNTFrameworkCore.EFCore.Context
         where TUserId : IEquatable<TUserId>
     {
         private readonly IUserSession _session;
-        private readonly IClock _clock;
+        private readonly ISystemClock _clock;
 
-        public PreUpdateModificationTrackingHook(IUserSession session, IClock clock)
+        public PreUpdateModificationTrackingHook(IUserSession session, ISystemClock clock)
         {
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
         public override string Name => HookNames.ModificationTracking;
-
-        protected override void Hook(IModificationTracking entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        public override int Order => int.MinValue;
+        protected override void Hook(IModificationTracking entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.Property(EFCoreShadow.ModifiedDateTime).CurrentValue = _clock.Now;
             metadata.Entry.Property(EFCoreShadow.ModifiedByBrowserName).CurrentValue = _session.UserBrowserName;
@@ -99,7 +100,7 @@ namespace DNTFrameworkCore.EFCore.Context
 
         public override string Name => HookNames.Tenancy;
 
-        protected override void Hook(ITenantEntity entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(ITenantEntity entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.Property(EFCoreShadow.TenantId).CurrentValue = _session.TenantId.To<TTenantId>();
         }
@@ -117,7 +118,7 @@ namespace DNTFrameworkCore.EFCore.Context
 
         public override string Name => HookNames.RowLevelSecurity;
 
-        protected override void Hook(IHasRowLevelSecurity entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(IHasRowLevelSecurity entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.Property(EFCoreShadow.UserId).CurrentValue = _session.UserId.To<TUserId>();
         }
@@ -127,7 +128,7 @@ namespace DNTFrameworkCore.EFCore.Context
     {
         public override string Name => HookNames.DeletedEntity;
 
-        protected override void Hook(IDeletedEntity entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(IDeletedEntity entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.State = EntityState.Modified;
             metadata.Entry.Property(EFCoreShadow.IsDeleted).CurrentValue = true;
@@ -138,7 +139,7 @@ namespace DNTFrameworkCore.EFCore.Context
     {
         public override string Name => HookNames.RowVersion;
 
-        protected override void Hook(IHasRowVersion entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(IHasRowVersion entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
             metadata.Entry.Property(EFCoreShadow.Version).OriginalValue =
                 metadata.Entry.Property(EFCoreShadow.Version).CurrentValue;
@@ -151,9 +152,9 @@ namespace DNTFrameworkCore.EFCore.Context
         public override int Order => int.MaxValue;
         public override EntityState HookState => EntityState.Unchanged;
 
-        protected override void Hook(IHasRowIntegrity entity, HookEntityMetadata metadata, IUnitOfWork uow)
+        protected override void Hook(IHasRowIntegrity entity, HookEntityMetadata metadata, IDbContext dbContext)
         {
-            metadata.Entry.Property(EFCoreShadow.Hash).CurrentValue = uow.EntityHash(entity);
+            metadata.Entry.Property(EFCoreShadow.Hash).CurrentValue = dbContext.EntityHash(entity);
         }
     }
 }

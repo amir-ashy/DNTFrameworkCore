@@ -12,21 +12,21 @@ namespace DNTFrameworkCore.TestAPI.Application.Common
 {
     public interface ILookupService : IScopedDependency
     {
-        Task<IReadOnlyList<LookupItem<long>>> ReadRolesAsync();
+        Task<IReadOnlyList<LookupItem<long>>> FetchRolesAsync();
     }
 
     public class LookupService : ILookupService
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IDbContext _dbContext;
 
-        public LookupService(IUnitOfWork uow)
+        public LookupService(IDbContext dbContext)
         {
-            _uow = uow ?? throw new ArgumentNullException(nameof(uow));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<IReadOnlyList<LookupItem<long>>> ReadRolesAsync()
+        public async Task<IReadOnlyList<LookupItem<long>>> FetchRolesAsync()
         {
-            var roles = await _uow.Set<Role>().AsNoTracking().Select(role => new LookupItem<long>
+            var roles = await _dbContext.Set<Role>().AsNoTracking().Select(role => new LookupItem<long>
             {
                 Text = role.Name,
                 Value = role.Id

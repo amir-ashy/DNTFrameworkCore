@@ -14,20 +14,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DNTFrameworkCore.TestWebApp.Application.Blogging
 {
-    public interface IBlogService : ICrudService<int, BlogModel>
+    public interface IBlogService : IEntityService<int, BlogModel>
     {
     }
 
-    public class BlogService : CrudService<Blog, int, BlogModel>, IBlogService
+    public class BlogService : EntityService<Blog, int, BlogModel>, IBlogService
     {
         private readonly IMapper _mapper;
 
-        public BlogService(IUnitOfWork uow, IEventBus bus, IMapper mapper) : base(uow, bus)
+        public BlogService(IDbContext dbContext, IEventBus bus, IMapper mapper) : base(dbContext, bus)
         {
             _mapper = mapper;
         }
 
-        public override Task<IPagedResult<BlogModel>> ReadPagedListAsync(FilteredPagedRequest request,
+        public override Task<IPagedResult<BlogModel>> FetchPagedListAsync(FilteredPagedRequest request,
             CancellationToken cancellationToken = default)
         {
             return EntitySet.AsNoTracking()

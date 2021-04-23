@@ -21,12 +21,12 @@ namespace DNTFrameworkCore.TestAPI.Authentication
     public class TokenValidator : ITokenValidator
     {
         private readonly ITokenService _token;
-        private readonly IUnitOfWork _uow;
+        private readonly IDbContext _dbContext;
 
-        public TokenValidator(ITokenService token, IUnitOfWork uow)
+        public TokenValidator(ITokenService token, IDbContext dbContext)
         {
             _token = token ?? throw new ArgumentNullException(nameof(token));
-            _uow = uow ?? throw new ArgumentNullException(nameof(uow));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task ValidateAsync(TokenValidatedContext context)
@@ -40,7 +40,7 @@ namespace DNTFrameworkCore.TestAPI.Authentication
                 return;
             }
 
-            var serialNumberClaim = claimsIdentity.FindFirst(UserClaimTypes.SecurityStamp);
+            var serialNumberClaim = claimsIdentity.FindFirst(UserClaimTypes.SecurityToken);
             if (serialNumberClaim == null)
             {
                 context.Fail("This is not our issued token. It has no serial-number.");
@@ -72,7 +72,7 @@ namespace DNTFrameworkCore.TestAPI.Authentication
 
         private async Task<Maybe<User>> FindUserAsync(long userId)
         {
-            return await _uow.Set<User>()
+            return await _dbContext.Set<User>()
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == userId);
         }

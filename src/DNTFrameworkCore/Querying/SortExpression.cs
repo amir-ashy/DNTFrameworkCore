@@ -6,10 +6,10 @@ namespace DNTFrameworkCore.Querying
     public class SortExpression
     {
         private const string ExpressionPattern =
-            @"(?<field>[a-zA-Z_][a-zA-Z0-9_]*)[_.:\s]{1}?(?=(?<direction>desc|asc))|(?<=(?<direction>[-+]?))(?<field>[a-zA-Z_][a-zA-Z0-9_]*)";
+            @"(?<direction>desc|asc)\((?<field>[a-zA-Z_][a-zA-Z0-9_]*)\)|(?<field>[a-zA-Z_][a-zA-Z0-9_]*)[_.:\s]{1}?(?=(?<direction>desc|asc))|(?<=(?<direction>[-+]?))(?<field>[a-zA-Z_][a-zA-Z0-9_]*)";
 
-        private static readonly Regex _regex = new Regex(ExpressionPattern,
-            RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(2));
+        private static readonly Regex _regex = new(ExpressionPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase,
+            TimeSpan.FromSeconds(2));
 
         public SortExpression(string field, bool descending)
         {
@@ -31,7 +31,7 @@ namespace DNTFrameworkCore.Querying
 
         public override bool Equals(object obj)
         {
-            if (obj == null || !(obj is SortExpression sort)) return false;
+            if (obj is not SortExpression sort) return false;
 
             if (ReferenceEquals(this, obj)) return true;
 

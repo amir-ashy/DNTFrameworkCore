@@ -4,7 +4,6 @@ using DNTFrameworkCore.TestWebApp.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 {
@@ -15,15 +14,15 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("DNTFrameworkCore.Caching.Cache", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(449)")
-                        .HasMaxLength(449);
+                        .HasMaxLength(449)
+                        .HasColumnType("nvarchar(449)");
 
                     b.Property<DateTimeOffset?>("AbsoluteExpiration")
                         .HasColumnType("datetimeoffset");
@@ -41,9 +40,9 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ExpiresAtTime")
-                        .HasName("IX_Cache_ExpiresAtTime");
+                        .HasDatabaseName("IX_Cache_ExpiresAtTime");
 
-                    b.ToTable("Cache","dbo");
+                    b.ToTable("Cache", "dbo");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.Cryptography.ProtectionKey", b =>
@@ -64,9 +63,9 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.HasIndex("FriendlyName")
                         .IsUnique()
-                        .HasName("IX_ProtectionKey_FriendlyName");
+                        .HasDatabaseName("IX_ProtectionKey_FriendlyName");
 
-                    b.ToTable("ProtectionKey","dbo");
+                    b.ToTable("ProtectionKey", "dbo");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.Logging.Log", b =>
@@ -82,64 +81,64 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImpersonatorTenantId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ImpersonatorUserId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Level")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LoggerName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenantId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("TenantName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("UserBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("UserDisplayName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UserIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Level")
-                        .HasName("IX_Log_Level");
+                        .HasDatabaseName("IX_Log_Level");
 
                     b.HasIndex("LoggerName")
-                        .HasName("IX_Log_LoggerName");
+                        .HasDatabaseName("IX_Log_LoggerName");
 
-                    b.ToTable("Log","dbo");
+                    b.ToTable("Log", "dbo");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.Numbering.NumberedEntity", b =>
@@ -151,9 +150,9 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("EntityName")
                         .IsRequired()
-                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256)
-                        .IsUnicode(false);
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<long>("NextValue")
                         .HasColumnType("bigint");
@@ -162,7 +161,7 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.HasIndex("EntityName")
                         .IsUnique()
-                        .HasName("UIX_NumberedEntity_EntityName");
+                        .HasDatabaseName("UIX_NumberedEntity_EntityName");
 
                     b.ToTable("NumberedEntity");
                 });
@@ -175,12 +174,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("CreatedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("CreatedByUserId")
                         .HasColumnType("bigint");
@@ -192,12 +191,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("ModifiedByUserId")
                         .HasColumnType("bigint");
@@ -207,18 +206,18 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("NormalizedTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
@@ -229,7 +228,7 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.HasIndex("NormalizedTitle")
                         .IsUnique()
-                        .HasName("Blog_NormalizedTitle");
+                        .HasDatabaseName("Blog_NormalizedTitle");
 
                     b.ToTable("Blog");
                 });
@@ -260,12 +259,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("CreatedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("CreatedByUserId")
                         .HasColumnType("bigint");
@@ -274,12 +273,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("ModifiedByUserId")
                         .HasColumnType("bigint");
@@ -292,8 +291,8 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
@@ -333,6 +332,69 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                     b.ToTable("ProductPrice");
                 });
 
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.Claim", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedByBrowserName")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("CreatedByIP")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<long?>("CreatedByUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Hash")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("ModifiedByBrowserName")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("ModifiedByIP")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<long?>("ModifiedByUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("ModifiedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityName")
+                        .HasDatabaseName("IX_Claim_EntityName");
+
+                    b.ToTable("Claim");
+
+                    b.HasDiscriminator<string>("EntityName").HasValue("Claim");
+                });
+
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.Permission", b =>
                 {
                     b.Property<int>("Id")
@@ -340,21 +402,21 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("EntityName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsGranted")
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("ModifiedByUserId")
                         .HasColumnType("bigint");
@@ -364,17 +426,17 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Discriminator")
-                        .HasName("IX_Permission_Discriminator");
+                    b.HasIndex("EntityName")
+                        .HasDatabaseName("IX_Permission_EntityName");
 
                     b.ToTable("Permission");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Permission");
+                    b.HasDiscriminator<string>("EntityName").HasValue("Permission");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.Role", b =>
@@ -385,12 +447,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("CreatedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("CreatedByUserId")
                         .HasColumnType("bigint");
@@ -399,16 +461,20 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("Hash")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("ModifiedByUserId")
                         .HasColumnType("bigint");
@@ -418,13 +484,13 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
@@ -435,49 +501,9 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("UIX_Role_NormalizedName");
+                        .HasDatabaseName("UIX_Role_NormalizedName");
 
                     b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RoleClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("ClaimValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
-
-                    b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<long?>("ModifiedByUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("RoleClaim");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.User", b =>
@@ -488,12 +514,12 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("CreatedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("CreatedByUserId")
                         .HasColumnType("bigint");
@@ -503,22 +529,26 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Hash")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LastLoggedInDateTime")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LastLoggedInDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("ModifiedByUserId")
                         .HasColumnType("bigint");
@@ -528,28 +558,28 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.Property<string>("NormalizedDisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedUserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("SecurityToken")
                         .IsRequired()
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<byte[]>("Version")
                         .IsConcurrencyToken()
@@ -560,75 +590,39 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
 
                     b.HasIndex("NormalizedDisplayName")
                         .IsUnique()
-                        .HasName("UIX_User_NormalizedDisplayName");
+                        .HasDatabaseName("UIX_User_NormalizedDisplayName");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UIX_User_NormalizedUserName");
+                        .HasDatabaseName("UIX_User_NormalizedUserName");
 
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("ClaimValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
-
-                    b.Property<string>("ModifiedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<long?>("ModifiedByUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserClaim");
-                });
-
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserRole", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedByBrowserName")
-                        .HasColumnType("nvarchar(1024)")
-                        .HasMaxLength(1024);
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("CreatedByIP")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long?>("CreatedByUserId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Hash")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<long>("RoleId")
                         .HasColumnType("bigint");
@@ -643,6 +637,30 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RoleClaim", b =>
+                {
+                    b.HasBaseType("DNTFrameworkCore.TestWebApp.Domain.Identity.Claim");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasDiscriminator().HasValue("RoleClaim");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserClaim", b =>
+                {
+                    b.HasBaseType("DNTFrameworkCore.TestWebApp.Domain.Identity.Claim");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasIndex("UserId");
+
+                    b.HasDiscriminator().HasValue("UserClaim");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RolePermission", b =>
@@ -682,24 +700,10 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RoleClaim", b =>
-                {
-                    b.HasOne("DNTFrameworkCore.TestWebApp.Domain.Identity.Role", "Role")
-                        .WithMany("Claims")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                    b.Navigation("PriceType");
 
-            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserClaim", b =>
-                {
-                    b.HasOne("DNTFrameworkCore.TestWebApp.Domain.Identity.User", "User")
-                        .WithMany("Claims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserRole", b =>
@@ -715,6 +719,32 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RoleClaim", b =>
+                {
+                    b.HasOne("DNTFrameworkCore.TestWebApp.Domain.Identity.Role", "Role")
+                        .WithMany("Claims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserClaim", b =>
+                {
+                    b.HasOne("DNTFrameworkCore.TestWebApp.Domain.Identity.User", "User")
+                        .WithMany("Claims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.RolePermission", b =>
@@ -724,6 +754,8 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.UserPermission", b =>
@@ -733,6 +765,31 @@ namespace DNTFrameworkCore.TestWebApp.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Catalog.Product", b =>
+                {
+                    b.Navigation("Prices");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.Role", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("Permissions");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("DNTFrameworkCore.TestWebApp.Domain.Identity.User", b =>
+                {
+                    b.Navigation("Claims");
+
+                    b.Navigation("Permissions");
+
+                    b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
         }

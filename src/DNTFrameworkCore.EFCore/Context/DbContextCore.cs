@@ -19,10 +19,10 @@ using DbException = DNTFrameworkCore.Exceptions.DbException;
 
 namespace DNTFrameworkCore.EFCore.Context
 {
-    public abstract class DbContextCore : DbContext, IUnitOfWork
+    public abstract class DbContextCore : DbContext, IDbContext
     {
         private readonly IEnumerable<IHook> _hooks;
-        private readonly List<string> _ignoredHookList = new List<string>();
+        private readonly List<string> _ignoredHookList = new();
 
         protected DbContextCore(DbContextOptions options, IEnumerable<IHook> hooks) : base(options)
         {
@@ -55,6 +55,29 @@ namespace DNTFrameworkCore.EFCore.Context
             try
             {
                 Transaction.Commit();
+            }
+            catch
+            {
+                RollbackTransaction();
+                throw;
+            }
+            finally
+            {
+                if (Transaction != null)
+                {
+                    Transaction.Dispose();
+                    Transaction = null;
+                }
+            }
+        }
+
+        public async Task CommitTransactionAsync()
+        {
+            if (!HasTransaction) throw new NullReferenceException("Please call `BeginTransaction()` method first.");
+
+            try
+            {
+                await Transaction.CommitAsync();
             }
             catch
             {
@@ -115,12 +138,10 @@ namespace DNTFrameworkCore.EFCore.Context
         protected virtual string EntityHash<TEntity>(Dictionary<string, object> row) where TEntity : class
         {
             var json = JsonSerializer.Serialize(row, new JsonSerializerOptions {WriteIndented = true});
-            using (var hashAlgorithm = SHA256.Create())
-            {
-                var byteValue = Encoding.UTF8.GetBytes(json);
-                var byteHash = hashAlgorithm.ComputeHash(byteValue);
-                return Convert.ToBase64String(byteHash);
-            }
+            using var hashAlgorithm = SHA256.Create();
+            var byteValue = Encoding.UTF8.GetBytes(json);
+            var byteHash = hashAlgorithm.ComputeHash(byteValue);
+            return Convert.ToBase64String(byteHash);
         }
 
         public void TrackGraph(object rootEntity, Action<EntityEntryGraphNode> callback)
